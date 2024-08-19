@@ -1,4 +1,13 @@
-import {Row,Col,Container,Image,ListGroup,Form,Button,Alert} from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Container,
+  Image,
+  ListGroup,
+  Form,
+  Button,
+  Alert,
+} from "react-bootstrap";
 import { Rating } from "react-simple-star-rating";
 import AddedToCartMessageComponent from "../../components/AddedToCartMessageComponent";
 import ImageZoom from "js-image-zoom";
@@ -7,12 +16,15 @@ import MetaComponent from "../../components/MetaComponents";
 import { ColorRing } from "react-loader-spinner";
 import { useParams } from "react-router-dom";
 
+//launch darkly
+import { useFlags } from "launchdarkly-react-client-sdk";
+
 const ProductDetailsPageComponent = ({
   addToCartReduxAction,
   reduxDispatch,
   getProductDetails,
   userInfo,
-  writeReviewApiRequest
+  writeReviewApiRequest,
 }) => {
   const getParams = useParams();
   const id = getParams.id;
@@ -25,6 +37,9 @@ const ProductDetailsPageComponent = ({
   const [productReviewed, setProductReviewed] = useState(false);
 
   const messageEndRef = useRef(null);
+
+  //launch darkly
+  const { demoFlagTop } = useFlags();
 
   //add dispatch redux to update amount of item added to cart
   const addToCartHandler = () => {
@@ -61,197 +76,233 @@ const ProductDetailsPageComponent = ({
           er.response.data.message ? er.response.data.message : er.response.data
         )
       );
-  }, [id,productReviewed]);
+  }, [id, productReviewed]);
 
   //add user review
   const sendReviewHandler = (e) => {
     e.preventDefault();
     const formElement = e.currentTarget.elements;
     const formInputs = {
-        comment: formElement.comment.value,
-        rating: formElement.rating.value,
-    }
+      comment: formElement.comment.value,
+      rating: formElement.rating.value,
+    };
     if (e.currentTarget.checkValidity() === true) {
-      writeReviewApiRequest(product._id,formInputs)
-      .then(data => {
-        if (data === "review created") {
+      writeReviewApiRequest(product._id, formInputs)
+        .then((data) => {
+          if (data === "review created") {
             setProductReviewed("You successfuly reviewed the page!");
-        }
-    })
-    .catch((er) => setProductReviewed( er.response.data.message ? er.response.data.message : er.response.data))
-}}
+          }
+        })
+        .catch((er) =>
+          setProductReviewed(
+            er.response.data.message
+              ? er.response.data.message
+              : er.response.data
+          )
+        );
+    }
+  };
 
-//scroll down to the newest review, when user submit a review
-useEffect(() => {
-  if (productReviewed) {
+  //scroll down to the newest review, when user submit a review
+  useEffect(() => {
+    if (productReviewed) {
       setTimeout(() => {
         messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }, 200)
-  }  
-}, [productReviewed])
-
+      }, 200);
+    }
+  }, [productReviewed]);
 
   return (
     <>
-    <MetaComponent title={product.name} description={product.description}/>
-    <Container>
-      <AddedToCartMessageComponent
-        showCartMessage={showCartMessage}
-        setShowCartMessage={setShowCartMessage}
-      />
-      <Row className="mt-5">
-        {loading ? (
-          <ColorRing
+      <MetaComponent title={product.name} description={product.description} />
+      <Container>
+        <AddedToCartMessageComponent
+          showCartMessage={showCartMessage}
+          setShowCartMessage={setShowCartMessage}
+        />
+        <Row className="mt-5">
+          {loading ? (
+            <ColorRing
               visible={true}
               height="7rem"
               width="7rem"
               ariaLabel="blocks-loading"
-              wrapperStyle={{marginTop: "10rem" }}
+              wrapperStyle={{ marginTop: "10rem" }}
               wrapperClass="blocks-wrapper"
               colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
             />
-        ) : error ? (
-          <h2>{error}</h2>
-        ) : (
-          <>
-            {/* Left column for display images */}
-            <Col style={{ zIndex: "1" }} md={4}>
-              {product.images
-                ? product.images.map((image, id) => (
-                    <div key={id}>
-                      <div key={id} id={`imageId${id + 1}`}>
-                        <Image
-                          crossOrigin="anonymous"
-                          fluid
-                          src={`${image.path ?? null}`}
-                        />
+          ) : error ? (
+            <h2>{error}</h2>
+          ) : (
+            <>
+              {/* Left column for display images */}
+              <Col style={{ zIndex: "1" }} md={4}>
+                {product.images
+                  ? product.images.map((image, id) => (
+                      <div key={id}>
+                        <div key={id} id={`imageId${id + 1}`}>
+                          <Image
+                            crossOrigin="anonymous"
+                            fluid
+                            src={`${image.path ?? null}`}
+                          />
+                        </div>
+                        <br />
                       </div>
-                      <br />
-                    </div>
-                  ))
-                : null}
-            </Col>
-            {/* Right column for display product details */}
-            <Col md={8}>
-              <Row>
-                {/* product name, price,etc */}
-                <Col md={8}>
-                  <ListGroup variant="flush">
-                    <ListGroup.Item>
-                      <h1>{product.name}</h1>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Rating
-                        readonly
-                        size={20}
-                        initialValue={product.rating}
-                      />{" "}
-                      {product.reviewNumber}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      Price <span className="fw-bold">${product.price}</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item>{product.description}</ListGroup.Item>
-                  </ListGroup>
-                </Col>
+                    ))
+                  : null}
+              </Col>
+              {/* Right column for display product details */}
+              <Col md={8}>
+                <Row>
+                  {/* product name, price,etc */}
+                  <Col md={8}>
+                    <ListGroup variant="flush">
+                      <ListGroup.Item>
+                        <h1>{product.name}</h1>
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        <Rating
+                          readonly
+                          size={20}
+                          initialValue={product.rating}
+                        />{" "}
+                        {product.reviewNumber}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        Price <span className="fw-bold">${product.price}</span>
+                      </ListGroup.Item>
+                      <ListGroup.Item>{product.description}</ListGroup.Item>
+                    </ListGroup>
+                  </Col>
 
-                {/* product status,quantity section  */}
-                <Col md={4}>
-                  <ListGroup>
-                    <ListGroup.Item>
-                      {" "}
-                      Status: {product.count > 0
-                        ? "in stock"
-                        : "out of stock"}{" "}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      Price: <span className="fw-bold">${product.price}</span>{" "}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      Quantity:
-                      <Form.Select
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        size="sm"
-                        aria-label="Default select example"
-                      >
-                        {[...Array(product.count).keys()].map((x) => (
-                          <option key={x + 1} value={x + 1}>
-                            {x + 1}
-                          </option>
+                  {/* product status,quantity section  */}
+                  <Col md={4}>
+                    <ListGroup>
+                      <ListGroup.Item>
+                        {" "}
+                        Status:{" "}
+                        {product.count > 0 ? "in stock" : "out of stock"}{" "}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        Price: <span className="fw-bold">${product.price}</span>{" "}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        Quantity:
+                        <Form.Select
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
+                          size="sm"
+                          aria-label="Default select example"
+                        >
+                          {[...Array(product.count).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        {demoFlagTop ? (
+                          "ปิดการขายชั่วคราว"
+                        ) : (
+                          <Button
+                            onClick={() => {
+                              addToCartHandler();
+                            }}
+                            variant="danger"
+                          >
+                            Add to cart
+                          </Button>
+                        )}
+                      </ListGroup.Item>
+                    </ListGroup>
+                  </Col>
+                </Row>
+                <Row></Row>
+
+                {/* Review Section */}
+                <Row>
+                  <Col className="mt-2">
+                    <h4>Reviews</h4>
+                    <ListGroup variant="flush">
+                      {product.reviews &&
+                        product.reviews.map((review, idx) => (
+                          <ListGroup.Item key={idx}>
+                            {review.user.name} <br />
+                            <Rating
+                              readonly
+                              size={20}
+                              initialValue={review.rating}
+                            />
+                            <br />
+                            {review.createdAt
+                              ? review.createdAt.substring(0, 10)
+                              : "N/A"}{" "}
+                            <br />
+                            {review.comment}
+                          </ListGroup.Item>
                         ))}
-                      </Form.Select>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Button
-                        onClick={() => {
-                          addToCartHandler();
-                        }}
-                        variant="danger"
-                      >
-                        Add to cart
-                      </Button>
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Col>
-              </Row>
-              <Row></Row>
+                      <div ref={messageEndRef}></div>
+                    </ListGroup>
+                  </Col>
+                </Row>
 
-              {/* Review Section */}
-              <Row>
-                <Col className="mt-2">
-                  <h4>Reviews</h4>
-                  <ListGroup variant="flush">
-                  {product.reviews && product.reviews.map((review, idx) => (
-                        <ListGroup.Item key={idx}>
-                          {review.user.name} <br />
-                          <Rating readonly size={20} initialValue={review.rating} />
-                          <br />
-                          {review.createdAt ? review.createdAt.substring(0, 10) : 'N/A'} <br />
-                          {review.comment}
-                        </ListGroup.Item>
-                        ))}
-                        <div ref={messageEndRef}></div>
-                  </ListGroup>
-                </Col>
-              </Row>
-
-              <hr></hr>
-                    {!userInfo.name?(<Alert variant="danger">Login first to write a review</Alert>):""}
-              {/* Review form submission Section */}
-              <Row className="mt-3">
-                <Form onSubmit={sendReviewHandler}>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlTextarea1"
-                  >
-                    <Form.Label>Write a review</Form.Label>
-                    <Form.Control name="comment" required as="textarea" rows={3} disabled={!userInfo.name} />
-                  </Form.Group>
-                  <Form.Select name="rating" required disabled={!userInfo.name} aria-label="Default select example">
-                  <option value="">Your rating</option>
-                  <option value="5">5 (very good)</option>
-                  <option value="4">4 (good)</option>
-                  <option value="3">3 (average)</option>
-                  <option value="2">2 (bad)</option>
-                  <option value="1">1 (awful)</option>
-                  </Form.Select>
-                  <Button disabled={!userInfo.name} type="submit" className="mt-3" variant="primary">
-                    Submit 
-                  </Button>
-                  {productReviewed}
-                </Form>
-              </Row>
-            </Col>
-          </>
-        )}
-      </Row>
-    </Container>
+                <hr></hr>
+                {!userInfo.name ? (
+                  <Alert variant="danger">Login first to write a review</Alert>
+                ) : (
+                  ""
+                )}
+                {/* Review form submission Section */}
+                <Row className="mt-3">
+                  <Form onSubmit={sendReviewHandler}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    ></Form.Group>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlTextarea1"
+                    >
+                      <Form.Label>Write a review</Form.Label>
+                      <Form.Control
+                        name="comment"
+                        required
+                        as="textarea"
+                        rows={3}
+                        disabled={!userInfo.name}
+                      />
+                    </Form.Group>
+                    <Form.Select
+                      name="rating"
+                      required
+                      disabled={!userInfo.name}
+                      aria-label="Default select example"
+                    >
+                      <option value="">Your rating</option>
+                      <option value="5">5 (very good)</option>
+                      <option value="4">4 (good)</option>
+                      <option value="3">3 (average)</option>
+                      <option value="2">2 (bad)</option>
+                      <option value="1">1 (awful)</option>
+                    </Form.Select>
+                    <Button
+                      disabled={!userInfo.name}
+                      type="submit"
+                      className="mt-3"
+                      variant="primary"
+                    >
+                      Submit
+                    </Button>
+                    {productReviewed}
+                  </Form>
+                </Row>
+              </Col>
+            </>
+          )}
+        </Row>
+      </Container>
     </>
   );
 };
