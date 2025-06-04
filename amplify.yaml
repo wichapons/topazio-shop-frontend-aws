@@ -14,9 +14,9 @@ applications:
             - echo "Directory contents:"
             - ls -la
             - echo "Build directory contents:"
-            - ls -la dist
+            - ls -la build
       artifacts:
-        baseDirectory: dist
+        baseDirectory: build
         files:
           - '**/*'
       cache:
