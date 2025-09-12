@@ -4,13 +4,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import LoginPage from "../pages/LoginPage";
 import { ColorRing } from "react-loader-spinner";
+import { getApiUrl } from '../utils/api';
 
 const ProtectedRoutesComponents = ({ isAdminPage }) => {
   const [isAuth, setIsAuth] = useState(null);
   const [isAdmin, setIsAdmin] = useState(null);
 
   useEffect(() => {
-    axios.get("/api/get-token").then(function (res) {
+    axios.get(getApiUrl("api/get-token")).then(function (res) {
       if (res.data) {
         setIsAuth(res.data.token);
         setIsAdmin(res.data.isAdmin);

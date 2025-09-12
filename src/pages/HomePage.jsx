@@ -1,10 +1,11 @@
 import HomePageComponent from "./components/HomePageComponent";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { getApiUrl } from '../utils/api';
 
 //getBestsellers products
 const getBestsellers = async () => {
-  const { data } = await axios.get("/api/products/bestsellers");
+  const { data } = await axios.get(getApiUrl("api/products/bestsellers"));
   return data;
 }
 

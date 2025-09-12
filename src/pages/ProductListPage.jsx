@@ -1,6 +1,7 @@
 import ProductListPageComponent from "./components/ProductListPageComponent";
 import axios from 'axios';
 import { useSelector } from "react-redux";
+import { getApiUrl } from '../utils/api';
 
 //logic for get filter url
 const proceedFilters = (filters) => {

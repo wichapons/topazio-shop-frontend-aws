@@ -2,10 +2,11 @@ import LoginPageComponent from "./components/LoginPageComponent";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setReduxUserState } from "../redux/actions/userActions";
+import { getApiUrl } from '../utils/api';
 
 //api request
 const loginUserApiRequest = async (email, password, doNotLogout) => {
-  const response = await axios.post("/api/users/login", { email, password, doNotLogout });
+  const response = await axios.post(getApiUrl("api/users/login"), { email, password, doNotLogout });
 
   if (response.data.userLoggedIn.doNotLogout) {
     localStorage.setItem("userInfo", JSON.stringify(response.data.userLoggedIn));

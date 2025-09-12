@@ -2,6 +2,7 @@ import UserCartDetailsPageComponent from "./components/UserCartDetailsPageCompon
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../../redux/actions/cartActions";
 import axios from "axios";
+import { getApiUrl } from '../../utils/api';
 
 const UserCartDetailsPage = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -12,12 +13,12 @@ const UserCartDetailsPage = () => {
   const reduxDispatch = useDispatch();
 
   const getUser = async () => {
-    const { data } = await axios.get("/api/users/profile/" + userInfo._id);
+    const { data } = await axios.get(getApiUrl("api/users/profile/") + userInfo._id);
     return data
 }
   //send order update to db
   const createOrder = async (orderData) => {
-    const response = await axios.post("/api/orders", { ...orderData });
+    const response = await axios.post(getApiUrl("api/orders"), { ...orderData });
     return response.data;
   }
 

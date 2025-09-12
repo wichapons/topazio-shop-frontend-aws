@@ -1,9 +1,10 @@
 import * as actionTypes from "../constants/cartConstants";
 import axios from 'axios';
+import { getApiUrl } from '../../utils/api';
 
 export const addToCart = (productId, quantity) => async (dispatch,getState) => {
      // Send an HTTP GET request to retrieve product information based on the provided productId
-    const { data } = await axios.get(`/api/products/get-one/${productId}`);
+    const { data } = await axios.get(getApiUrl(`api/products/get-one/${productId}`));
 
      // Dispatch an action to add the product to the cart
     dispatch({

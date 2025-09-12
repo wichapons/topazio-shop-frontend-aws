@@ -2,9 +2,10 @@ import RegisterPageComponent from "./components/RegisterPageComponent";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setReduxUserState } from "../redux/actions/userActions";
+import { getApiUrl } from '../utils/api';
 
 const registerUserApiRequest = async (name, lastName, email, password) => {
-    const response = await axios.post("/api/users/register", { name, lastName, email, password });
+    const response = await axios.post(getApiUrl("api/users/register"), { name, lastName, email, password });
     //sessionStorage.setItem("userInfo", JSON.stringify(response.userCreated)); //convert object from response to JSON
     if (response.status === 200 || response.status === 201){
         window.location.href = "/login"; //redirect to /user 

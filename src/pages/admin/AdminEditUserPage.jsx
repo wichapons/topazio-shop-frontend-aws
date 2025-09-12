@@ -1,5 +1,6 @@
 import AdminEditUserPageComponent from "./components/EditUserPageComponent";
 import axios from "axios";
+import { getApiUrl } from '../../utils/api';
 
 //update user data in database
 const updateUserApiRequest = async (userId, name, lastName, email, isAdmin) => {

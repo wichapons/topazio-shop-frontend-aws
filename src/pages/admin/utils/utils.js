@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getApiUrl } from '../../../utils/api';
 
 //send images details and path to database
 export const uploadImagesApiRequest = async (images, productId) => {
@@ -6,7 +7,7 @@ export const uploadImagesApiRequest = async (images, productId) => {
     Array.from(images).forEach(image => {
         formData.append("images", image);
     })
-    const {data} = await axios.post("/api/products/admin/upload?productId=" + productId, formData);
+    const {data} = await axios.post(getApiUrl("api/products/admin/upload?productId=") + productId, formData);
     return data;
   }
 
@@ -26,7 +27,7 @@ export const uploadImagesCloudinaryApiRequest = (images,productId) => {
         axios.post(url,formData)
         .then(res => {
           //update images path in database
-          axios.post("/api/products/admin/upload?cloudinary=true&productId=" + productId, res.data);
+          axios.post(getApiUrl("api/products/admin/upload?cloudinary=true&productId=") + productId, res.data);
         })
         .catch(error => {
           console.error(error); // Handle any errors

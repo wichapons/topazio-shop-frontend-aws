@@ -10,13 +10,16 @@ export default defineConfig(({ mode }) => {
     base: "/",
     server: {
       port: '3000',
-      proxy: {
-        '/api': {
-          target: "https://topazio-shop-backend.onrender.com",
-          changeOrigin: true,
-          //rewrite: (path) => path.replace(/^\/api/, '')
+      // Keep proxy for development only
+      ...(mode === 'development' && {
+        proxy: {
+          '/api': {
+            target: "https://topazio-shop-backend.onrender.com",
+            changeOrigin: true,
+            //rewrite: (path) => path.replace(/^\/api/, '')
+          }
         }
-      }
+      })
     }
   }
 });

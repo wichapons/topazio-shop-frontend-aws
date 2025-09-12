@@ -1,9 +1,10 @@
 import ProductsPageComponent from "./components/ProductsPageComponent";
 
 import axios from "axios";
+import { getApiUrl } from '../../utils/api';
 
 const fetchProducts = async (abortController) => {
-    const response = await axios.get("/api/products/admin", {
+    const response = await axios.get(getApiUrl("api/products/admin"), {
         signal: abortController.signal,
     })
     return response.data;

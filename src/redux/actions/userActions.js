@@ -1,5 +1,6 @@
-import { LOGIN_USER } from '../constants/userConstants'
+import { LOGIN_USER, LOGOUT_USER } from '../constants/userConstants'
 import axios from 'axios'
+import { getApiUrl } from '../../utils/api';
 
 export const setReduxUserState = (userCreated) => (dispatch) => {
     dispatch({
@@ -10,7 +11,7 @@ export const setReduxUserState = (userCreated) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
     document.location.href = "/login";
-    axios.get('/api/logout')
+    axios.get(getApiUrl('api/logout'))
     //clear data in local storage and sessions
     localStorage.removeItem("userInfo");
     sessionStorage.removeItem("userInfo");

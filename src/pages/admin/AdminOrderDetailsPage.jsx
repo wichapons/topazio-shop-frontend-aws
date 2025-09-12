@@ -1,13 +1,14 @@
 import OrderDetailsPageComponent from './components/OrderDetailsPageComponent'
 import axios from "axios";
+import { getApiUrl } from '../../utils/api';
 
 const getOrder = async(id) => {
-    const response = await axios.get("/api/orders/user/" + id);
+    const response = await axios.get(getApiUrl("api/orders/user/") + id);
     return response.data;
 }
 
 const markAsDelivered = async (id) => {
-  const { data } = await axios.put("/api/orders/delivered/" + id);
+  const { data } = await axios.put(getApiUrl("api/orders/delivered/") + id);
   if (data) {
       return data;
   }

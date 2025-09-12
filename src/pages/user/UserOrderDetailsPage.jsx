@@ -2,18 +2,19 @@ import UserOrderDetailsPageComponent from "./components/UserOrderDetailsPageComp
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { loadScript } from "@paypal/paypal-js";
+import { getApiUrl } from '../../utils/api';
 
 
 const UserOrderDetailsPage = () => {
   const userInfo = useSelector((state) => state.userRegisterLogin.userInfo);
 
   const getUser = async () => {
-    const { data } = await axios.get("/api/users/profile/" + userInfo._id);
+    const { data } = await axios.get(getApiUrl("api/users/profile/") + userInfo._id);
     return data;
   };
 
   const getOrder = async (orderId) => {
-    const { data } = await axios.get("/api/orders/user/" + orderId);
+    const { data } = await axios.get(getApiUrl("api/orders/user/") + orderId);
     return data;
   };
 
@@ -99,7 +100,7 @@ const onCancelHandler = function () {
 }
 
 const updateOrder = async (orderId) => {
-  const { data } = await axios.put("/api/orders/paid/" + orderId);
+  const { data } = await axios.put(getApiUrl("api/orders/paid/") + orderId);
   return data;
 }
 

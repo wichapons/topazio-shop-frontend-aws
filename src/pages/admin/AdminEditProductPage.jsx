@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { saveAttributeToCatDoc } from "../../redux/actions/categoryActions";
 import { uploadImagesApiRequest,uploadImagesCloudinaryApiRequest } from "./utils/utils";
+import { getApiUrl } from '../../utils/api';
 
 //get product data from db
 const fetchProduct = async (productId) => {
