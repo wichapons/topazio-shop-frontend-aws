@@ -31,22 +31,19 @@ echo "Waiting for system to be ready after setup..."
 sleep 5
 
 echo "Building Docker image..."
-docker build -t $IMAGE_NAME .
+sudo docker build -t $IMAGE_NAME .
 
 echo "Stopping existing container (if any)..."
-docker stop $APP_NAME 2>/dev/null || true
-docker rm $APP_NAME 2>/dev/null || true
+sudo docker stop $APP_NAME 2>/dev/null || true
+sudo docker rm $APP_NAME 2>/dev/null || true
 
 echo "Running new container..."
-docker run -d --name $APP_NAME --restart unless-stopped -p $PORT:80 $IMAGE_NAME
+sudo docker run -d --name $APP_NAME --restart unless-stopped -p $PORT:80 $IMAGE_NAME
 
 echo ""
 echo "Full deployment completed!"
 echo "Container started on port $PORT"
 echo ""
-echo "IMPORTANT: If this is a fresh EC2 instance, please logout and login again (or reboot) for Docker group changes to take effect:"
-echo "  sudo reboot"
-echo ""
-echo "After reboot, you can check status with:"
-echo "  docker ps | grep $APP_NAME"
-echo "  docker logs $APP_NAME"
+echo "You can check status with:"
+echo "  sudo docker ps | grep $APP_NAME"
+echo "  sudo docker logs $APP_NAME"
