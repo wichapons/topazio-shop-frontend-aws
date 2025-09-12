@@ -14,11 +14,24 @@ applications:
             - echo "Directory contents:"
             - ls -la
             - echo "Build directory contents:"
-            - ls -la build
+            - ls -la dist
       artifacts:
-        baseDirectory: build
+        baseDirectory: dist
         files:
           - '**/*'
       cache:
         paths:
           - node_modules/**/*
+    customHeaders:
+      - pattern: '**/*.js'
+        headers:
+          - key: 'Content-Type'
+            value: 'application/javascript'
+      - pattern: '**/*.mjs'
+        headers:
+          - key: 'Content-Type'
+            value: 'application/javascript'
+    rewrites:
+      - source: '/<*>'
+        target: '/index.html'
+        status: '200'
