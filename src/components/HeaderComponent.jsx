@@ -87,7 +87,7 @@ useEffect(() => {
       <Container>
         {/* use LinkContainer for render the specific page without reloading browser */}
         <LinkContainer to="/">
-          <Navbar.Brand href="/">Topazio Shop</Navbar.Brand>
+          <Navbar.Brand href="/">TrueIDC Demo Shop</Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
